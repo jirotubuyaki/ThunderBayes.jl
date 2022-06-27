@@ -2,6 +2,8 @@
   <img src="https://jirotubuyaki.github.io/gimp/thunder.png" width="280px" alt="thunder"/>
 </p>
 
+[![CI](https://github.com/jirotubuyaki/ThunderBayes/actions/workflows/ci.yml/badge.svg)](https://github.com/jirotubuyaki/ThunderBayes/actions/workflows/ci.yml)
+
 ## Thunder Bayes
 ### Scalable Bayesian Library for Machine Learning
 We aim to develop bayesian nonparametric library by Scala & Julia. Lots of relate scientific papers are pubilshed.
