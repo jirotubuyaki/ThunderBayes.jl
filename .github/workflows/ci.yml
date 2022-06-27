@@ -42,7 +42,6 @@ jobs:
           JULIA_PKG_SERVER: ""
       - run: julia --color=yes -e 'import Pkg; Pkg.Registry.update()'
       - run: julia --color=yes --project=.ci/ -e 'import Pkg; Pkg.precompile()'
-      - run: julia --color=yes --project=.ci/ -e 'import RegistryCI; RegistryCI.test()'
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
       - uses: julia-actions/julia-processcoverage@v1
