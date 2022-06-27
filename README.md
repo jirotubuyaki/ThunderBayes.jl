@@ -2,7 +2,9 @@
   <img src="https://jirotubuyaki.github.io/gimp/thunder.png" width="280px" alt="thunder"/>
 </p>
 
-[![CI](https://github.com/jirotubuyaki/ThunderBayes/actions/workflows/ci.yml/badge.svg)](https://github.com/jirotubuyaki/ThunderBayes/actions/workflows/ci.yml)
+![CI](https://github.com/jirotubuyaki/ThunderBayes/actions/workflows/ci.yml/badge.svg)
+![GitHub](https://img.shields.io/github/license/jirotubuyaki/ThunderBayes)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/jirotubuyaki/ThunderBayes)
 
 ## Thunder Bayes
 ### Scalable Bayesian Library for Machine Learning
