@@ -4,7 +4,6 @@ using Distributions, Random
 using Statistics, StatsBase
 using LinearAlgebra
 using DataFrames
-using Plots,ColorSchemes
 
 @testset "ThunderBayes.jl" begin
 mu_1 = [5, 5]
