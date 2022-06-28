@@ -1,8 +1,17 @@
 using Documenter
 using ThunderBayes
 
+struct LaTeXEquation
+    content::String
+end
+
+function Base.show(io::IO, ::MIME"text/latex", x::LaTeXEquation)
+    # Wrap in $$ for display math printing
+    return print(io, "\$\$ " * x.content * " \$\$")
+end
+
 makedocs(
-    sitename = "ThunderBayes",
+    sitename = "ThunderBayes.jl",
     format = Documenter.HTML(),
     modules = [ThunderBayes]
 )

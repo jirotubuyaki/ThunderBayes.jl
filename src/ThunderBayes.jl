@@ -3,6 +3,10 @@
 # okadaalgorithm@gmail.com
 # MIT LICENSE
 
+"""
+    ThunderBayes
+Bayesian Nonparametric Clustering Algorithm
+"""
 module ThunderBayes
 
 using Distributions, Random
@@ -12,6 +16,10 @@ using DataFrames
 using Plots,ColorSchemes
 
 export data_check
+
+"""
+    data_check(data)
+"""
 function data_check(data)
     data_length::UInt128 = size(data)[1]
     dim::UInt128 = size(data)[2]
