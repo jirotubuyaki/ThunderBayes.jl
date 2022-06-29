@@ -8,7 +8,7 @@
 
 ## Plan
 #### Now Under Development & Test
-* Already standard bayesian nonparametric clustering was implemented.
+* Already standard bayesian nonparametric clustering has been implemented.
 * Now we implement bayesian nonparametric time-series clustering.  
 * Please wait alpha release.
 
