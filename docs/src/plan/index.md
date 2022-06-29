@@ -1,5 +1,5 @@
 # Plan
-### Scalable Bayesian Library for Machine Learning
+### Bayesian Nonparametric Package for Machine Learning
 We aim to develop bayesian nonparametric library by Julia. Lots of relate scientific papers are pubilshed.
 We organize the papers and develop useful library. Firstly We will implement clustering methods and aim to release the first alpha version.
 

@@ -50,25 +50,16 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
         mu_in = Array{Float64}(undef, dim)
         for i = 1 : dim
             mu_in[i,1] = mean(data[:, i])
-            for j = 1 : dim
-                if i == j
-                    sigma_new[i, j] = cov(data[: ,i], data[:, j])
-                else
-                    sigma_new[i, j] = 0
-                end
-            end
-        end
-        for i = 1 : dim
-            data_sum = 0
             mean_i = mean(data[:, i])
-            for j = 1 : dim
+            for j = i : dim
                 mean_j = mean(data[:, j])
-                if i != j
-                    for n = 1 : data_length
-                        data_sum = data_sum + (data[n, i] - mean_i)*(data[n, j] - mean_j)
-                    end
-                    sigma_new[i, j] = data_sum / data_length
+                data_sum = 0
+                for n = 1 : data_length
+                    data_sum = data_sum + (data[n, i] - mean_i)*(data[n, j] - mean_j)
                 end
+                sigma_new[i, j] = data_sum / data_length
+                sigma_new[j, i] = sigma_new[i, j]
+
             end
         end
         mu_0 = mu_in
@@ -201,35 +192,32 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
             end
         end
         for j = 1 : k_count
-            if n_k[j] > 1
-                data_k_j = transpose(reshape(data_k[j],(dim,n_k[j])))
+            data_k_j = transpose(reshape(data_k[j],(dim,n_k[j])))
+            if n_k[j] > dim
                 mu_k_j = mu_k[j]
                 flag_sigma_k = false
-                data_k_j_sum = 0
                 for n = 1 : dim
                     mean_n = mean(data_k_j[:, n])
-                    mu_k_j[n, 1] = mean_n
-                    for o = 1 : n_k[j]
-                        data_k_j_sum = data_k_j_sum + (data_k_j[o, n] - mean_n) ^ 2
-                    end
-                    sigma_k[j, n, n] = data_k_j_sum / n_k[j]
-                end
-                for n = 1 : dim
-                    data_k_j_sum = 0
-                    mean_n = mean(data_k_j[:, n])
-                    for o = 1 : dim
+                    mu_k_j[n, 1] = mean_n 
+                    for o = n : dim
                         mean_o = mean(data_k_j[:, o])
-                        if n != o
-                            for p = 1 : n_k[j]
-                                data_k_j_sum = data_k_j_sum + (data_k_j[p, n] - mean_n)*(data_k_j[p, o] - mean_o)
-                            end
-                            sigma_k[j, n, o] = (data_k_j_sum / n_k[j])
+                        data_k_j_sum = 0
+                        for p = 1 : n_k[j]
+                            data_k_j_sum = data_k_j_sum + (data_k_j[p, n] - mean_n)*(data_k_j[p, o] - mean_o)
                         end
+                        sigma_k[j, n, o] = (data_k_j_sum / n_k[j])
+                        sigma_k[j, o, n] = sigma_k[j, n, o] 
+
                     end
                 end
                 mu_k[j] = mu_k_j
             else
-                mu_k[j] = mu_0
+                mu_k_j = mu_k[j]
+                for n = 1 : dim
+                    mean_n = mean(data_k_j[:, n])
+                    mu_k_j[n, 1] = mean_n
+                end
+                mu_k[j] = mu_k_j
                 sigma_k[j, :, :] = sigma_new[:, :]
             end
         end
@@ -347,35 +335,31 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
             end
         end
         for j = 1 : k_count
-            if n_k[j] > 1
-                data_k_j = transpose(reshape(data_k[j],(dim,n_k[j])))
+            data_k_j = transpose(reshape(data_k[j],(dim,n_k[j])))
+            if n_k[j] > dim
                 mu_k_j = mu_k[j]
                 flag_sigma_k = false
-                data_k_j_sum = 0
                 for n = 1 : dim
                     mean_n = mean(data_k_j[:, n])
                     mu_k_j[n, 1] = mean_n
-                    for o = 1 : n_k[j]
-                        data_k_j_sum = data_k_j_sum + (data_k_j[o, n] - mean_n) ^ 2
-                    end
-                    sigma_k[j, n, n] = data_k_j_sum / n_k[j]
-                end
-                for n = 1 : dim
-                    data_k_j_sum = 0
-                    mean_n = mean(data_k_j[:, n])
-                    for o = 1 : dim
+                    for o = n : dim
                         mean_o = mean(data_k_j[:, o])
-                        if n != o
-                            for p = 1 : n_k[j]
-                                data_k_j_sum = data_k_j_sum + (data_k_j[p, n] - mean_n)*(data_k_j[p, o] - mean_o)
-                            end
-                            sigma_k[j, n, o] = (data_k_j_sum / n_k[j])
+                        data_k_j_sum = 0
+                        for p = 1 : n_k[j]
+                            data_k_j_sum = data_k_j_sum + (data_k_j[p, n] - mean_n)*(data_k_j[p, o] - mean_o)
                         end
+                        sigma_k[j, n, o] = (data_k_j_sum / n_k[j])
+                        sigma_k[j, o, n] = sigma_k[j, n, o] 
                     end
                 end
                 mu_k[j] = mu_k_j
             else
-                mu_k[j] = mu_0
+                mu_k_j = mu_k[j]
+                for n = 1 : dim
+                    mean_n = mean(data_k_j[:, n])
+                    mu_k_j[n, 1] = mean_n
+                end
+                mu_k[j] = mu_k_j
                 sigma_k[j, :, :] = sigma_new[:, :]
             end
         end

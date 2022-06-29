@@ -1,6 +1,7 @@
 # ThunderBayes.jl
 
 ```@docs
+ThunderBayes.ThunderBayes
 data_check
 ```
 
