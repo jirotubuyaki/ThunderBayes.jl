@@ -6,6 +6,10 @@
 ![GitHub](https://img.shields.io/github/license/jirotubuyaki/ThunderBayes)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jirotubuyaki/ThunderBayes)
 
+## Plan
+* Already standard bayesian nonparametric clustering was implemented.
+* Now we implement bayesian nonparametric time-series clustering.
+
 ## Thunder Bayes
 ### Bayesian Nonparametric Package for Machine Learning
 We aim to develop bayesian nonparametric library by Scala & Julia. Lots of relate scientific papers are pubilshed.
