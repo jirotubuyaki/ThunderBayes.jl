@@ -5,7 +5,7 @@
 
 """
     ThunderBayes
-Bayesian Nonparametric Clustering Algorithm
+Bayesian Nonparametric Clustering Algorithms
 """
 module ThunderBayes
 
@@ -19,6 +19,21 @@ export data_check
 
 """
     data_check(data)
+Check whether data contain NaN value.
+
+# Examples
+```julia-repl
+    ok = data_check(data)
+```
+
+# Arguments
+
+- `data::Array` : the colums are the values of dimentions.
+
+# Return
+
+- `ok::Bool` : whether data contain NaN or not.
+
 """
 function data_check(data)
     data_length::UInt128 = size(data)[1]
@@ -35,6 +50,38 @@ function data_check(data)
 end
 
 export crp_train
+"""
+    crp_train
+Calculate the clusters of data. MCMC Algorithms have been implemented. 
+
+# Examples
+```julia-repl
+burn_in = 5000
+iteration = 50000
+mu = [0, 0, 0, 0, 0]
+sigma_table = Matrix{Float64}(1 * I, 5, 5)
+alpha = 1
+ro_0 = 1
+autoparams = false
+result, cluster_id = crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0, auto_params)
+```
+# Arguments
+
+- `data::Array` : the colums are the values of dimentions.
+- `burn_in::Integer` : an iteration integer of burn in.  burn in duration is abandoned.
+- `iteration::Integer` : an iteration integer.   
+- `mu::Array` : a vector of center points of data. If data is 3 dimensions, a vector of 3 elements like "[2, 4, 1]".  
+- `sigma_table::Matrx` : a numeric of table position variance.  
+- `alpha::Integer=1` : a numeric of a CRP concentration rate.  
+- `ro_0::Integer=1` : a numeric of a CRP mu change rate.
+- `autoparams::Bool` : automate sigma_table and mu for your data.
+
+# Return
+
+- `Result::Array` : the mean values and variance-covariance matrix of the Clusters .
+- `cluster_id::Vector` : the cluster id of data. 
+
+"""
 function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_params)
 
     rng = MersenneTwister(1234)
@@ -429,16 +476,57 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
     end
     println("cluster number: " , size(result_arry)[1])
 
-    return result_arry ,max
+    entropy_all = 0
+    for i = 1 : size(result_arry)[1]
+        entropy_all = entropy_all + (result_arry[i, 2] / data_length) * log2(result_arry[i, 2] / data_length)
+    end
+    println("entropy: " , -1 * entropy_all)
+    
+    return result_arry, max
 end
 
 export crp_visualize
-function crp_visualize(data, n_k_max)
+"""
+    crp_visualize(data, cluster_id)
+Visualization of clustering results.
+
+# Examples
+```julia-repl
+    crp_visualize(data, cluster_id)
+```
+
+# Arguments
+
+- `data::Array` : a colums are the values of dimentions.
+- `cluster_id::Vector` : a return variable of function crp_train() .
+
+"""
+function crp_visualize(data, cluster_id)
 
 end
 
 export crp_predict
-function crp_predict(data, result_arry)
+"""
+    crp_predict(data, result)
+Prediction for new data.
+
+# Examples
+```julia-repl
+    prediction_result = crp_preduct(data, cluster_id)
+```
+
+# Arguments
+
+- `data::vector` : a data for prediction.
+- `result::Array` : a return variable of function crp_train() .
+
+
+# Return
+
+- `prediction_result::Array` : the first column is cluster id and next colums are joined probabiilty of each clusters.
+
+"""
+function crp_predict(data, result)
 
 end
 end
