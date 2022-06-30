@@ -3,6 +3,7 @@
 </p>
 
 ![CI](https://github.com/jirotubuyaki/ThunderBayes/actions/workflows/ci.yml/badge.svg)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://jirotubuyaki.github.io/ThunderBayes.jl/index.html)
 ![GitHub](https://img.shields.io/github/license/jirotubuyaki/ThunderBayes)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jirotubuyaki/ThunderBayes)
 
