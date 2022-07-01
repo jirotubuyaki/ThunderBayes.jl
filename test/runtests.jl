@@ -27,5 +27,4 @@ for i = 401 : 600
 end
 ok = data_check(data)
 @test ok == true
-crp_visualize([1:2],1)
 end
