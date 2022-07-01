@@ -50,4 +50,5 @@ jobs:
           JULIA_PKG_SERVER: ""
       - run: julia --color=yes -e 'import Pkg; Pkg.Registry.update()'
       - run: julia --color=yes --project=.ci/ -e 'import Pkg; Pkg.precompile()'
+      - run: julia --color=yes -e 'Pkg.add("RegistryCI")'
       - run: julia --color=yes --project=.ci/ -e 'import RegistryCI; RegistryCI.test()'
