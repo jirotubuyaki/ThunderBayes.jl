@@ -57,4 +57,4 @@ jobs:
       - run: julia --color=yes -e 'import Pkg; Pkg.Registry.update()'
       - run: .ci/instantiate.sh
       - run: julia --color=yes --project=.ci/ -e 'import Pkg; Pkg.precompile()'
-      - run: julia --project=.ci/ --color=yes -e 'import RegistryCI; RegistryCI.test()'
+      - run: julia --project=.ci/ --color=yes -e 'import RegistryCI; RegistryCI.test(path = "https://github.com/JuliaRegistries/General" ,registry_deps=["https://github.com/JuliaRegistries/General"])'
