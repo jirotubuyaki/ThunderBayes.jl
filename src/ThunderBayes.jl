@@ -63,7 +63,7 @@ sigma_table = Matrix{Float64}(1 * I, 5, 5)
 alpha = 1
 ro_0 = 1
 autoparams = false
-result, cluster_id = crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0, auto_params)
+result, cluster_result = crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0, auto_params)
 ```
 # Arguments
 
@@ -78,8 +78,8 @@ result, cluster_id = crp_train(data, burn_in, iteration, mu, sigma_table, alpha,
 
 # Return
 
-- `Result::Array` : the mean values and variance-covariance matrix of the Clusters .
-- `cluster_id::Vector` : the cluster id of data. 
+- `result::Array` : the mean values and variance-covariance matrix of the Clusters .
+- `cluster_result::Vector` : the cluster id of data. 
 
 """
 function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_params)
@@ -106,7 +106,6 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
                 end
                 sigma_new[i, j] = data_sum / data_length
                 sigma_new[j, i] = sigma_new[i, j]
-
             end
         end
         mu_0 = mu_in
@@ -253,11 +252,16 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
                             data_k_j_sum = data_k_j_sum + (data_k_j[p, n] - mean_n)*(data_k_j[p, o] - mean_o)
                         end
                         sigma_k[j, n, o] = (data_k_j_sum / n_k[j])
-                        sigma_k[j, o, n] = sigma_k[j, n, o] 
-
+                        sigma_k[j, o, n] = sigma_k[j, n, o]
+                        if sigma_k[j ,n, o] == 0
+                            flag_sigma_k = true
+                        end
                     end
                 end
                 mu_k[j] = mu_k_j
+                if flag_sigma_k
+                    sigma_k[j, : , :] = sigma_new[:, :]
+                end
             else
                 mu_k_j = mu_k[j]
                 for n = 1 : dim
@@ -397,9 +401,15 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
                         end
                         sigma_k[j, n, o] = (data_k_j_sum / n_k[j])
                         sigma_k[j, o, n] = sigma_k[j, n, o] 
+                        if sigma_k[j ,n, o] == 0
+                            flag_sigma_k = true
+                        end
                     end
                 end
                 mu_k[j] = mu_k_j
+                if flag_sigma_k
+                    sigma_k[j, :, :] = sigma_new[:, :]
+                end
             else
                 mu_k_j = mu_k[j]
                 for n = 1 : dim
@@ -449,12 +459,16 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
     end
 
     result_arry = Array{Float64}(undef, count - 1,  2 + dim + dim * dim)
+    cluster_index = Dict{Int64 ,Int64}()
     count = 1
+    count_cluter = 1
     for j = 1 : k_count
         if n_k_result[j] >= 1
-            result_arry[count, 1] = j
+            cluster_index = merge!(cluster_index, Dict(j => count_cluter))
+            result_arry[count, 1] = count_cluter
             result_arry[count, 2] = n_k[j]
             mu_k_tmp = mu_k[j]
+            count_cluter = count_cluter + 1
             for k = 1 : dim
                 result_arry[count, 2 + k] = mu_k_tmp[k, 1]
             end
@@ -468,6 +482,12 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
             count = count + 1
         end
     end
+
+    cluster_result = Array{Int64}(undef, data_length)
+    for i = 1 : data_length
+        cluster_result[i] = cluster_index[max[i]]
+    end
+
     for i = 1 : size(result_arry)[1]
         println("id: " , result_arry[i, 1])
         println("n_k: " , result_arry[i, 2] , " mu: " , result_arry[i, 3 : 2 + dim])
@@ -482,12 +502,12 @@ function crp_train(data, burn_in, iteration, mu, sigma_table, alpha, ro_0,auto_p
     end
     println("entropy: " , -1 * entropy_all)
     
-    return result_arry, max
+    return result_arry, cluster_result
 end
 
 export crp_visualize
 """
-    crp_visualize(data, cluster_id)
+    crp_visualize(data, cluster_result)
 Visualization of clustering results.
 
 # Examples
@@ -498,11 +518,58 @@ Visualization of clustering results.
 # Arguments
 
 - `data::Array` : a colums are the values of dimentions.
-- `cluster_id::Vector` : a return variable of function crp_train() .
+- `cluster_result::Vector` : a return variable of function crp_train() .
 
 """
-function crp_visualize(data, cluster_id)
-
+function crp_visualize(data, cluster_result)
+    data_dim = size(data)[2]
+    gr()
+    plt = []
+    for i = 1 : data_dim
+        for j = 1 : data_dim
+            if i == data_dim
+                x_label_str = string(j, " dim")
+            else
+                x_label_str = ""
+            end
+            if j == 1
+                y_label_str = string(i , " dim")
+            else
+                y_label_str = ""
+            end
+            if i != j
+                push!(plt, plot(data[:, i], data[:, j],
+                    st =:scatter,
+                    markersize = 2.4,
+                    markerstrokewidth = 0.1,
+                    markerstrokealpha = 0.0,
+                    group = cluster_result,
+                    color = cluster_result,
+                    palette = :tab10,
+                    xguidefontsize = 7,
+                    yguidefontsize = 7,
+                    xtickfontsize = 4,
+                    ytickfontsize = 4,
+                    xlabel = x_label_str,
+                    ylabel = y_label_str,
+                    legendfontsize = 4,
+                    size = (1000 / data_dim, 1000 /data_dim),
+                    legend = true))
+            else   
+                push!(plt, histogram(data[:, i],
+                    bins = :scott,
+                    palette = :tab10,
+                    xguidefontsize = 7,
+                    yguidefontsize = 7,
+                    xtickfontsize = 4,
+                    ytickfontsize = 4,
+                    xlabel = x_label_str,
+                    ylabel = y_label_str,
+                    legend = false))          
+            end
+        end
+    end
+    plot(plt..., layout = (data_dim,data_dim), size = (1000, 1000))
 end
 
 export crp_predict
