@@ -8,6 +8,16 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/jirotubuyaki/ThunderBayes)
 
 ## Plan
+
+#### Research
+* Bierkens, J., Fearnhead, P., &amp; Roberts, G. (2019). The zig-zag process and super-efficient sampling for Bayesian analysis of Big Data. The Annals of Statistics, 47(3). https://doi.org/10.1214/18-aos1715 
+* Sachs, M., Sen, D., Lu, J., &amp; Dunson, D. (2022). Posterior computation with the Gibbs zig-zag sampler. Bayesian Analysis, -1(-1). https://doi.org/10.1214/22-ba1319 
+* Casella, G., Mengersen, K. L., Robert, C. P., &amp; Titterington, D. M. (2002). Perfect samplers for mixtures of distributions. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 64(4), 777–790. https://doi.org/10.1111/1467-9868.00360   
+* Neal, R. M. (2003). Slice sampling. The Annals of Statistics, 31(3). https://doi.org/10.1214/aos/1056562461  
+
+Recently I research these  beyesian inferences.....
+
+
 #### Now Under Development & Test
 * Already standard bayesian nonparametric clustering has been implemented.
 * Now we implement bayesian nonparametric time-series clustering.  
